@@ -18,11 +18,11 @@ jobs:
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/checkout@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: latest
 
       - name: Prepare and deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: latest
         run: |
           npm install
-          npm run build
+          npm run prod
