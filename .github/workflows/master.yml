@@ -25,4 +25,4 @@ jobs:
           GITHUB_TOKEN: latest
         run: |
           npm install
-          npm run prod
+          npm run build
