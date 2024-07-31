@@ -95,4 +95,4 @@ jobs:
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist/bus # The folder the action should deploy.          
+          folder: dist/bus/browser # The folder the action should deploy.          
