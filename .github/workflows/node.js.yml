@@ -1,63 +1,21 @@
-name: Deploy
-
-on:
-  push:
-    branches: [master]
-
+name: Build and Deploy
+on: [push]
+permissions:
+  contents: write
 jobs:
-  build-angular-app:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
-      - name: Checkout
+      - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v4
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          node-version: latest
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      # - name: Test
-      #   run: npm run test:ci
-
-      - name: Archive build
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: deploy_dist
-          path: dist
-
-      # - name: Archive code coverage result
-      #   if: success()
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: deploy_coverage
-      #     path: coverage
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-angular-app
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download build
-        uses: actions/download-artifact@v4
-        with:
-          name: deploy_dist
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@releases/v4
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: ./
+          folder: build # The folder the action should deploy.
